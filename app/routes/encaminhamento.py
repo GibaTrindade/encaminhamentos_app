@@ -2,7 +2,8 @@ from fastapi import APIRouter, Depends, HTTPException
 from typing import List
 from sqlalchemy import orm
 from ..services import get_db, get_all_encs
-from ..schemas.index import Encaminhamento
+from ..schemas.index import Encaminhamento, EncaminhamentoCreate
+from ..models.index import Encaminhamento as BD_Encaminhamento, Reuniao as BD_Reuniao
 
 enc = APIRouter()
 
@@ -23,4 +24,26 @@ async def read_data(db: orm.Session=Depends(get_db)):
 
     return enc_list
 
+
+
+@enc.post("/encaminhamentos/", response_model=Encaminhamento, tags=["encaminhamento"])
+def criar_encaminhamento(encaminhamento: EncaminhamentoCreate, db: orm.Session = Depends(get_db)):
+    db_encaminhamento = BD_Encaminhamento(assunto = encaminhamento.assunto,
+                                          tema = encaminhamento.tema,
+                                          observacao = encaminhamento.observacao,
+                                          status = encaminhamento.status)
+    db.add(db_encaminhamento)
+    db.commit()
+    db.refresh(db_encaminhamento)
+    return db_encaminhamento
+
+@enc.post("/reunioes/{reuniao_id}/adicionar_encaminhamento/{encaminhamento_id}")
+def adicionar_encaminhamento(reuniao_id: int, encaminhamento_id: int, db: orm.Session = Depends(get_db)):
+    reuniao: BD_Reuniao = db.query(BD_Reuniao).filter(BD_Reuniao.id == reuniao_id).first()
+    encaminhamento = db.query(BD_Encaminhamento).filter(BD_Encaminhamento.id == encaminhamento_id).first()
+    if not reuniao or not encaminhamento:
+        raise HTTPException(status_code=404, detail="Reunião ou encaminhamento não encontrado.")
+    reuniao.encaminhamentos.append(encaminhamento)
+    db.commit()
+    return {"message": "Encaminhamento adicionado à reunião com sucesso."}
 

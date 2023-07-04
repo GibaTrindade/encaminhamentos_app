@@ -12,6 +12,6 @@ class Reuniao(Base):
     #createdAt = Column(TIMESTAMP(timezone=True),
     #                   nullable=False, server_default=func.now())
 
-    encaminhamentos = _orm.relationship("Encaminhamento", secondary="enc_reunioes", back_populates="reunioes")
-    participantes = _orm.relationship("Participante", secondary="part_reunioes", back_populates="reunioes")
+    encaminhamentos: list = _orm.relationship("Encaminhamento", secondary="enc_reunioes", back_populates="reunioes")
+    participantes: list = _orm.relationship("Participante", secondary="part_reunioes", back_populates="reunioes")
     

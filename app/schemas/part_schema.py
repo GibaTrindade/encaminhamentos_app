@@ -4,5 +4,6 @@ from typing import TYPE_CHECKING, List
 
 
 class Participante(ParticipanteBase):
+    id: int
     reunioes: List[ReuniaoBase]
 

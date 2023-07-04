@@ -1,7 +1,6 @@
 from pydantic import BaseModel
 from typing import TYPE_CHECKING, List
 from enum import Enum
-#from .reuniao import ReuniaoBase
 
 class Status(str, Enum):
     INICIADO = 'INICIADO'
@@ -20,8 +19,14 @@ class EncaminhamentoBase(BaseModel):
     class Config:
         orm_mode = True
 
-class EncaminhamentoCreate(EncaminhamentoBase):
-    pass
+class EncaminhamentoCreate(BaseModel):
+    assunto: str
+    tema: str
+    observacao: str
+    status: Status = None
+    
+    class Config:
+        orm_mode = True
 
 
 

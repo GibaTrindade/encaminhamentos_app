@@ -21,6 +21,6 @@ class Encaminhamento(Base):
     status = Column(String(15))
     
 
-    reunioes = _orm.relationship("Reuniao", secondary="enc_reunioes", back_populates="encaminhamentos")
+    reunioes: list = _orm.relationship("Reuniao", secondary="enc_reunioes", back_populates="encaminhamentos")
     
 

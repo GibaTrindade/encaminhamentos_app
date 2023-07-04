@@ -1,6 +1,5 @@
 from pydantic import BaseModel
 from typing import TYPE_CHECKING, List
-#from .encaminhamento import EncaminhamentoBase
 
 
 class ReuniaoBase(BaseModel):
@@ -10,8 +9,11 @@ class ReuniaoBase(BaseModel):
     class Config:
         orm_mode = True
 
-class ReuniaoCreate(ReuniaoBase):
-    pass
+class ReuniaoCreate(BaseModel):
+    nome: str
+
+    class Config:
+        orm_mode = True
 
 
 
