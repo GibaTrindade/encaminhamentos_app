@@ -2,11 +2,11 @@ from fastapi import APIRouter, Depends, HTTPException
 from typing import List
 from sqlalchemy import orm
 from ..configs.db import conn
-from ..schemas.index import Reuniao, ReuniaoCreate
+from ..schemas.index import Reuniao, ReuniaoCreate, ReuniaoUpdate
 from ..models.index import Reuniao as BD_Reuniao
 from ..models.index import Encaminhamento as BD_Encaminhamento
 from ..services import get_db, get_all_reunioes, get_reuniao_by_id, get_enc_by_id, \
-     add_reuniao_a_enc, create_reuniao
+     add_reuniao_a_enc, create_reuniao, update_reuniao
 
 import json
 
@@ -40,3 +40,9 @@ def adicionar_encaminhamento(reuniao_id: int, encaminhamento_id: int, db: orm.Se
     add_reuniao_a_enc(db, encaminhamento, reuniao)
     
     return {"message": "Reunião adicionada ao encaminhamento com sucesso."}
+
+@reuniao.patch("/reuniao/{item_id}", response_model=Reuniao, tags=["reuniao"])
+def update_item(reuniao_id: str, reuniao: ReuniaoUpdate, db: orm.Session = Depends(get_db)):
+    db_reuniao = update_reuniao(db=db, reuniao_id=reuniao_id, reuniao=reuniao)
+    
+    return db_reuniao

@@ -9,6 +9,13 @@ class ReuniaoCreate(BaseModel):
         orm_mode = True
 
 
+class ReuniaoUpdate(BaseModel):
+    nome: str = None
+
+    class Config:
+        orm_mode = True
+
+
 class ReuniaoBase(ReuniaoCreate):
     id: int
     nome: str
