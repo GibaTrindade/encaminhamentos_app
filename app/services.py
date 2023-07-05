@@ -1,5 +1,6 @@
 import fastapi
 from fastapi import Depends, security, HTTPException
+from fastapi.encoders import jsonable_encoder
 from sqlalchemy import orm
 from typing import List
 from PIL import Image
@@ -11,7 +12,8 @@ import jwt as jwt
 from .config import settings
 from .configs.db import SessionLocal, Base, engine
 from .models.index import Participante, Encaminhamento, Reuniao  , User as User_Model
-from .schemas.index import  UserCreate, User as User_Schema, EncaminhamentoCreate, ReuniaoCreate, ParticipanteCreate
+from .schemas.index import  UserCreate, User as User_Schema, EncaminhamentoCreate,\
+      EncaminhamentoUpdate, ReuniaoCreate, ReuniaoUpdate, ParticipanteCreate
 
 SECRET = settings.TOKEN_SECRET
 
@@ -118,18 +120,33 @@ def create_enc(encaminhamento: EncaminhamentoCreate, db: orm.Session):
     db.refresh(db_encaminhamento)
     return db_encaminhamento
 
-def update_enc(db: orm.Session, enc_id: int, enc: EncaminhamentoCreate):
+def update_enc(db: orm.Session, enc_id: int, enc: EncaminhamentoUpdate):
     db_enc = get_enc_by_id(db=db, enc_id=enc_id)
-    db_enc.assunto = enc.assunto
-    db_enc.tema = enc.tema
-    db_enc.observacao = enc.observacao
-    db_enc.status = enc.status
-
+    if not db_enc:
+        raise HTTPException(status_code=404, detail="Encaminhamento não encontrado!")
+    enc_data = enc.dict(exclude_unset=True)
+    for key, value in enc_data.items():
+        setattr(db_enc, key, value)
     db.add(db_enc)
     db.commit()
     db.refresh(db_enc)
-
     return db_enc
+    
+    
+    #db_enc = get_enc_by_id(db=db, enc_id=enc_id)
+    #update_item_encoded = jsonable_encoder(enc)
+    #db_enc = update_item_encoded
+    #db_enc = Encaminhamento(**enc.dict())
+    #db_enc.assunto = enc.assunto
+    #db_enc.tema = enc.tema
+    #db_enc.observacao = enc.observacao
+    #db_enc.status = enc.status
+
+    #db.add(db_enc)
+    #db.commit()
+    #db.refresh(db_enc)
+
+    #return db_enc
 
 
 def get_all_reunioes(db: orm.Session):
@@ -145,6 +162,19 @@ def create_reuniao(reuniao: ReuniaoCreate, db: orm.Session):
     db.commit()
     db.refresh(bd_reuniao)
     return bd_reuniao
+
+def update_reuniao(db: orm.Session, reuniao_id: int, reuniao: ReuniaoUpdate ):
+    db_reuniao = get_reuniao_by_id(db=db, reuniao_id=reuniao_id)
+    if not db_reuniao:
+        raise HTTPException(status_code=404, detail="Reunião não encontrada!")
+    reuniao_data = reuniao.dict(exclude_unset=True)
+    for key, value in reuniao_data.items():
+        setattr(db_reuniao, key, value)
+    db.add(db_reuniao)
+    db.commit()
+    db.refresh(db_reuniao)
+    return db_reuniao
+
 
 def add_reuniao_a_enc(db: orm.Session, encaminhamento: Encaminhamento, reuniao: Reuniao):
     encaminhamento.reunioes.append(reuniao)

@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException
 from typing import List
 from sqlalchemy import orm
-from ..services import get_db, get_all_encs, create_enc
-from ..schemas.index import Encaminhamento, EncaminhamentoCreate
+from ..services import get_db, get_all_encs, create_enc, update_enc
+from ..schemas.index import Encaminhamento, EncaminhamentoCreate, EncaminhamentoUpdate
 from ..models.index import Encaminhamento as BD_Encaminhamento, Reuniao as BD_Reuniao
 
 enc = APIRouter()
@@ -41,3 +41,8 @@ def adicionar_encaminhamento(reuniao_id: int, encaminhamento_id: int, db: orm.Se
     db.commit()
     return {"message": "Encaminhamento adicionado à reunião com sucesso."}
 
+@enc.patch("/encaminhamento/{item_id}", response_model=Encaminhamento, tags=["encaminhamento"])
+def update_item(enc_id: str, encaminhamento: EncaminhamentoUpdate, db: orm.Session = Depends(get_db)):
+    db_encaminhamento = update_enc(db=db, enc_id=enc_id, enc=encaminhamento)
+    
+    return db_encaminhamento

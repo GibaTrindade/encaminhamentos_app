@@ -18,6 +18,15 @@ class EncaminhamentoCreate(BaseModel):
     class Config:
         orm_mode = True
 
+class EncaminhamentoUpdate(BaseModel):
+    assunto: str = None
+    tema: str = None
+    observacao: str = None
+    status: Status = None
+    
+    class Config:
+        orm_mode = True
+
 
 class EncaminhamentoBase(EncaminhamentoCreate):
     id: int
