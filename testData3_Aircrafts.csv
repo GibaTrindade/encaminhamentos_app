@@ -1,7 +1,0 @@
-"id";"name";"image";"description";"business_id";"make";"model";"max_passengers";"max_airspeed";"max_range";"max_altitude";"baggage_capacity";"aircraft_class";"home_port"
-1;JetLeg;string;Jet for fun;1;Embraer;F-100;12;12;12;12;12;D;Recife
-2;JetBean;string;Jet for comercial flights;1;Embraer;F-100;12;12;12;12;12;D;Recife
-3;JetCrazy;string;Jet for comercial flights;2;Embraer;F-100;12;12;12;12;12;D;Recife
-4;JetStupid;string;Jet for fun;1;Embraer;F-100;12;12;12;12;12;D;Recife
-5;JetFly;string;Jet for comercial flights;3;Embraer;F-100;12;12;12;12;12;D;Recife
-6;JetDeck;string;Jet for comercial flights;2;Embraer;F-100;12;12;12;12;12;D;Recife
