@@ -4,6 +4,5 @@ from typing import TYPE_CHECKING, List
 
 
 class Encaminhamento(EncaminhamentoBase):
-    id: int
     reunioes: List[ReuniaoBase]
 

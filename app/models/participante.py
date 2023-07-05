@@ -1,7 +1,6 @@
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, ForeignKey
 import sqlalchemy.orm as _orm
 from ..configs.db import Base
-from .part_reunioes import part_reunioes
 
 
 # API get from DB asking for theses models
@@ -17,9 +16,9 @@ class Participante(Base):
     id = Column(Integer, primary_key=True, index=True)
     nome = Column(String(100))
     lotacao = Column(String(50))
-    matricula = Column(String(10))
-    
+    matricula = Column(String(10), nullable=True)
+    reuniao_id = Column(Integer, ForeignKey('reunioes.id'), nullable=True)
 
-    reunioes = _orm.relationship("Reuniao", secondary="part_reunioes", back_populates="participantes")
+    reunioes = _orm.relationship("Reuniao", back_populates="participantes")
     
 

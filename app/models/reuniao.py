@@ -2,7 +2,6 @@ from sqlalchemy import TIMESTAMP, Column, Integer, String, ForeignKey, Date
 from sqlalchemy.sql import func
 from ..configs.db import meta, Base
 import sqlalchemy.orm as _orm
-from .part_reunioes import part_reunioes
 
 class Reuniao(Base):
     __tablename__ = "reunioes"
@@ -13,5 +12,5 @@ class Reuniao(Base):
     #                   nullable=False, server_default=func.now())
 
     encaminhamentos: list = _orm.relationship("Encaminhamento", secondary="enc_reunioes", back_populates="reunioes")
-    participantes: list = _orm.relationship("Participante", secondary="part_reunioes", back_populates="reunioes")
+    participantes: list = _orm.relationship("Participante", back_populates="reunioes")
     

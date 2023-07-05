@@ -1,20 +1,24 @@
 from pydantic import BaseModel
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING, List, Optional
 #from .reuniao import ReuniaoBase
 
 
 
-class ParticipanteBase(BaseModel):
-    id: int
+class ParticipanteCreate(BaseModel):
     nome: str
-    lotacao: str
-    matricula: str
-    
+    lotacao: str 
+    matricula: str = None
+    reuniao_id: Optional[int] = None
+
     class Config:
         orm_mode = True
 
-class EncaminhamentoCreate(ParticipanteBase):
-    pass
+
+class ParticipanteBase(ParticipanteCreate):
+    id: int
+    
+
+
 
 
 

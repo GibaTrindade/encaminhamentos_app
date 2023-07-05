@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from typing import List
 from sqlalchemy import orm
-from ..services import get_db, get_all_encs
+from ..services import get_db, get_all_encs, create_enc
 from ..schemas.index import Encaminhamento, EncaminhamentoCreate
 from ..models.index import Encaminhamento as BD_Encaminhamento, Reuniao as BD_Reuniao
 
@@ -28,13 +28,7 @@ async def read_data(db: orm.Session=Depends(get_db)):
 
 @enc.post("/encaminhamentos/", response_model=Encaminhamento, tags=["encaminhamento"])
 def criar_encaminhamento(encaminhamento: EncaminhamentoCreate, db: orm.Session = Depends(get_db)):
-    db_encaminhamento = BD_Encaminhamento(assunto = encaminhamento.assunto,
-                                          tema = encaminhamento.tema,
-                                          observacao = encaminhamento.observacao,
-                                          status = encaminhamento.status)
-    db.add(db_encaminhamento)
-    db.commit()
-    db.refresh(db_encaminhamento)
+    db_encaminhamento = create_enc(encaminhamento, db)
     return db_encaminhamento
 
 @enc.post("/reunioes/{reuniao_id}/adicionar_encaminhamento/{encaminhamento_id}")

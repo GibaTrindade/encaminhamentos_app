@@ -9,16 +9,6 @@ class Status(str, Enum):
     CANCELADO = 'CANCELADO'
 
 
-class EncaminhamentoBase(BaseModel):
-    id: int
-    assunto: str
-    tema: str
-    observacao: str
-    status: Status = None
-    
-    class Config:
-        orm_mode = True
-
 class EncaminhamentoCreate(BaseModel):
     assunto: str
     tema: str
@@ -27,6 +17,14 @@ class EncaminhamentoCreate(BaseModel):
     
     class Config:
         orm_mode = True
+
+
+class EncaminhamentoBase(EncaminhamentoCreate):
+    id: int
+
+
+
+
 
 
 

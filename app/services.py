@@ -11,7 +11,7 @@ import jwt as jwt
 from .config import settings
 from .configs.db import SessionLocal, Base, engine
 from .models.index import Participante, Encaminhamento, Reuniao  , User as User_Model
-from .schemas.index import  UserCreate, User as User_Schema
+from .schemas.index import  UserCreate, User as User_Schema, EncaminhamentoCreate, ReuniaoCreate, ParticipanteCreate
 
 SECRET = settings.TOKEN_SECRET
 
@@ -106,10 +106,44 @@ async def get_current_user(db: orm.Session = Depends(get_db), token: str = Depen
 def get_all_encs(db: orm.Session):
     return db.query(Encaminhamento).all()
 
+def get_enc_by_id(db: orm.Session, enc_id: int):
+    return db.query(Encaminhamento).filter(Encaminhamento.id == enc_id).first()
+
+def create_enc(encaminhamento: EncaminhamentoCreate, db: orm.Session):
+    enc_dict = encaminhamento.dict()
+    db_encaminhamento = Encaminhamento(**enc_dict)
+                                        
+    db.add(db_encaminhamento)
+    db.commit()
+    db.refresh(db_encaminhamento)
+    return db_encaminhamento
+
 
 def get_all_reunioes(db: orm.Session):
     return db.query(Reuniao).all()
 
+def get_reuniao_by_id(db: orm.Session, reuniao_id: int):
+    return db.query(Reuniao).filter(Reuniao.id == reuniao_id).first()
+
+def create_reuniao(reuniao: ReuniaoCreate, db: orm.Session):
+    reuniao_dict = reuniao.dict()
+    bd_reuniao = Reuniao(**reuniao_dict)
+    db.add(bd_reuniao)
+    db.commit()
+    db.refresh(bd_reuniao)
+    return bd_reuniao
+
+def add_reuniao_a_enc(db: orm.Session, encaminhamento: Encaminhamento, reuniao: Reuniao):
+    encaminhamento.reunioes.append(reuniao)
+    db.commit()
 
 def get_all_parts(db: orm.Session):
     return db.query(Participante).all()
+
+def create_participante(participante: ParticipanteCreate, db: orm.Session):
+    part_dict = participante.dict()
+    bd_part = Participante(**part_dict)
+    db.add(bd_part)
+    db.commit()
+    db.refresh(bd_part)
+    return bd_part

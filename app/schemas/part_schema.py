@@ -1,9 +1,7 @@
 from .reuniao import ReuniaoBase
 from .participante import ParticipanteBase
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING, List, Optional
 
 
 class Participante(ParticipanteBase):
-    id: int
-    reunioes: List[ReuniaoBase]
-
+    reunioes: Optional[ReuniaoBase]
