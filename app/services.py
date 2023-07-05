@@ -118,6 +118,19 @@ def create_enc(encaminhamento: EncaminhamentoCreate, db: orm.Session):
     db.refresh(db_encaminhamento)
     return db_encaminhamento
 
+def update_enc(db: orm.Session, enc_id: int, enc: EncaminhamentoCreate):
+    db_enc = get_enc_by_id(db=db, enc_id=enc_id)
+    db_enc.assunto = enc.assunto
+    db_enc.tema = enc.tema
+    db_enc.observacao = enc.observacao
+    db_enc.status = enc.status
+
+    db.add(db_enc)
+    db.commit()
+    db.refresh(db_enc)
+
+    return db_enc
+
 
 def get_all_reunioes(db: orm.Session):
     return db.query(Reuniao).all()
