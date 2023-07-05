@@ -13,6 +13,15 @@ class ParticipanteCreate(BaseModel):
     class Config:
         orm_mode = True
 
+class ParticipanteUpdate(BaseModel):
+    nome: str = None
+    lotacao: str = None
+    matricula: str = None
+    reuniao_id: Optional[int] = None
+
+    class Config:
+        orm_mode = True
+
 
 class ParticipanteBase(ParticipanteCreate):
     id: int

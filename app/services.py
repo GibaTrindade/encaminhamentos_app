@@ -13,7 +13,7 @@ from .config import settings
 from .configs.db import SessionLocal, Base, engine
 from .models.index import Participante, Encaminhamento, Reuniao  , User as User_Model
 from .schemas.index import  UserCreate, User as User_Schema, EncaminhamentoCreate,\
-      EncaminhamentoUpdate, ReuniaoCreate, ReuniaoUpdate, ParticipanteCreate
+      EncaminhamentoUpdate, ReuniaoCreate, ReuniaoUpdate, ParticipanteCreate, ParticipanteUpdate
 
 SECRET = settings.TOKEN_SECRET
 
@@ -178,10 +178,28 @@ def update_reuniao(db: orm.Session, reuniao_id: int, reuniao: ReuniaoUpdate ):
 
 def add_reuniao_a_enc(db: orm.Session, encaminhamento: Encaminhamento, reuniao: Reuniao):
     encaminhamento.reunioes.append(reuniao)
+    
     db.commit()
+
+def add_enc_a_reuniao(db: orm.Session, encaminhamento: Encaminhamento, reuniao: Reuniao):
+    reuniao.encaminhamentos.append(encaminhamento)
+    
+    db.commit()
+
+def update_enc_da_reuniao(db: orm.Session, encaminhamento_excluir: Encaminhamento,  
+                          encaminhamento_incluir: Encaminhamento, reuniao: Reuniao):
+
+    reuniao.encaminhamentos.remove(encaminhamento_excluir)
+    reuniao.encaminhamentos.append(encaminhamento_incluir)
+    db.add(reuniao)
+    db.commit()
+    db.refresh(reuniao)
 
 def get_all_parts(db: orm.Session):
     return db.query(Participante).all()
+
+def get_participante_by_id(db: orm.Session, participante_id: int):
+    return db.query(Participante).filter(Participante.id == participante_id).first()
 
 def create_participante(participante: ParticipanteCreate, db: orm.Session):
     part_dict = participante.dict()
@@ -190,3 +208,22 @@ def create_participante(participante: ParticipanteCreate, db: orm.Session):
     db.commit()
     db.refresh(bd_part)
     return bd_part
+
+def update_participante(db: orm.Session, participante_id: int, participante: ParticipanteUpdate ):
+    db_participante = get_participante_by_id(db=db, participante_id=participante_id)
+    if not db_participante:
+        raise HTTPException(status_code=404, detail="Participante não encontrado!")
+    participante_data = participante.dict(exclude_unset=True)
+    for key, value in participante_data.items():
+        setattr(db_participante, key, value)
+    db.add(db_participante)
+    db.commit()
+    db.refresh(db_participante)
+    return db_participante
+
+
+def add_participante_a_reuniao(db: orm.Session, participante: Participante, reuniao: Reuniao):
+    reuniao.participantes.append(participante)
+    db.add(reuniao)
+    db.commit()
+    db.refresh(reuniao)
